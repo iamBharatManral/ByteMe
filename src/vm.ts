@@ -81,6 +81,18 @@ export default class VM {
           }
           break
         }
+        case Bytecode.STORE: {
+          const offset = this.code[this.ip++]
+          const addr = this.fp + offset
+          this.stack[addr] = this.stack.pop()!
+          break
+        }
+        case Bytecode.LOAD: {
+          const offset = this.code[this.ip++]
+          const addr = this.fp + offset
+          this.stack.push(this.stack[addr])
+          break
+        }
         case Bytecode.PRINT:
           console.log(this.stack.pop() + '\n')
           break
