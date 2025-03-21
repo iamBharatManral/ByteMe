@@ -11,7 +11,7 @@ export default class VM {
       // Fetch the instruction
       const opcode = this.code[this.ip++]
       if (this.trace) {
-        console.log(`${(this.ip - 1).toString().padStart(4, '0')}: ${this.getInstruction(opcode)}`)
+        console.log(`${(this.ip - 1).toString().padStart(4, '0')}: ${this.getInstruction(opcode)}`, this.stack)
       }
       // Decode the instruction
       switch (opcode) {
@@ -42,6 +42,6 @@ export default class VM {
         output += `${operand}`
         break
     }
-    return output
+    return output.padEnd(15)
   }
 }
