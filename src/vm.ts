@@ -9,7 +9,7 @@ export default class VM {
     return this.stack.length - 1
   }
   execute() {
-    let stackString = "";
+    let stackString = "Stack trace:\n";
     while (this.ip < this.code.length) {
       // Fetch the instruction
       const opcode = this.code[this.ip++]
@@ -58,13 +58,13 @@ export default class VM {
           break
         }
         case Bytecode.PRINT:
-          console.log(this.stack.pop())
+          console.log(this.stack.pop() + '\n')
           break
         case Bytecode.HALT:
           break
       }
     }
-    stackString += `\nGlobals:\n${JSON.stringify(this.globals)}`
+    stackString += this.globalsString()
     console.log(stackString)
   }
   private isStackFull(): boolean {
@@ -95,6 +95,13 @@ export default class VM {
           break
         }
     }
-    return output.padEnd(15)
+    return output.padEnd(30)
+  }
+  private globalsString(): string {
+    let string = "\nglobals:\n"
+    for (const key in this.globals) {
+      string += `${key}`.padStart(4, '0') + `: ${this.globals[key]}\n`
+    }
+    return string
   }
 }
