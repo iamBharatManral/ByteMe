@@ -2,16 +2,17 @@ import Bytecode from "./bytecode";
 
 export default class VM {
   stack: Array<number> = []
-  sp: number = -1;
-  fp: number = 0;
-  stackSize: number = 100;
+  sp = -1;
+  fp = 0;
+  stackSize = 100;
   constructor(private code: Array<number>, private data: Array<any>, public ip: number, private trace: boolean = false) { }
   execute() {
+    let stackString = "";
     while (this.ip < this.code.length) {
       // Fetch the instruction
       const opcode = this.code[this.ip++]
       if (this.trace) {
-        console.log(`${(this.ip - 1).toString().padStart(4, '0')}: ${this.getInstruction(opcode)}`, this.stack)
+        stackString += `${(this.ip - 1).toString().padStart(4, '0')}: ${this.getInstruction(opcode)} ${this.stack}\n`;
       }
       // Decode the instruction
       switch (opcode) {
@@ -27,9 +28,10 @@ export default class VM {
           console.log(val)
           break
         case Bytecode.HALT:
-          return
+          break
       }
     }
+    console.log(stackString)
   }
   private isStackFull(): boolean {
     return this.stack.length >= this.stackSize
