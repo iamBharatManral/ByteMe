@@ -1,0 +1,24 @@
+{
+  "name": "ByteMe",
+  "version": "1.0.0",
+  "description": "Byte code interpreter",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "ts-node src/main.ts",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/iamBharatManral/ByteMe"
+  },
+  "keywords": [
+    "VM",
+    "bytecode",
+    "interpreter"
+  ],
+  "author": "Bharat Manral",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
