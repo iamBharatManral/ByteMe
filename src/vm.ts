@@ -39,6 +39,24 @@ export default class VM {
         case Bytecode.POP:
           this.stack.pop()
           break
+        case Bytecode.IADD: {
+          const second = this.stack.pop()!
+          const first = this.stack.pop()!
+          this.stack.push(first + second)
+          break
+        }
+        case Bytecode.ISUB: {
+          const second = this.stack.pop()!
+          const first = this.stack.pop()!
+          this.stack.push(first - second)
+          break
+        }
+        case Bytecode.IMUL: {
+          const second = this.stack.pop()!
+          const first = this.stack.pop()!
+          this.stack.push(first * second)
+          break
+        }
         case Bytecode.PRINT:
           console.log(this.stack.pop())
           break
@@ -46,7 +64,7 @@ export default class VM {
           break
       }
     }
-    stackString += `\nglobals:\n${JSON.stringify(this.globals)}`
+    stackString += `\nGlobals:\n${JSON.stringify(this.globals)}`
     console.log(stackString)
   }
   private isStackFull(): boolean {
@@ -65,6 +83,15 @@ export default class VM {
         {
           const operand = this.code[this.ip]
           output += `${operand}`.padEnd(5)
+          break
+        }
+      case Bytecode.IADD:
+      case Bytecode.ISUB:
+      case Bytecode.IMUL:
+        {
+          const operand2 = this.stack.at(-1)
+          const operand1 = this.stack.at(-2)
+          output += `${operand1} ${operand2}`.padEnd(5)
           break
         }
     }
