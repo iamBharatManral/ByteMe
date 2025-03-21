@@ -116,6 +116,11 @@ export default class VM {
       }
       case Bytecode.GLOAD:
       case Bytecode.GSTORE:
+      case Bytecode.STORE:
+      case Bytecode.LOAD:
+      case Bytecode.BR:
+      case Bytecode.BRT:
+      case Bytecode.BRF:
         {
           const operand = this.code[this.ip]
           output += `${operand}`.padEnd(5)
