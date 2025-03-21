@@ -57,6 +57,30 @@ export default class VM {
           this.stack.push(first * second)
           break
         }
+        case Bytecode.BR: {
+          const addr = this.code[this.ip++];
+          this.stack.push(this.ip)
+          this.ip = addr
+          break
+        }
+        case Bytecode.BRT: {
+          const val = this.stack.at(-1)
+          if (val) {
+            const addr = this.code[this.ip++];
+            this.stack.push(this.ip)
+            this.ip = addr
+          }
+          break
+        }
+        case Bytecode.BRF: {
+          const val = this.stack.at(-1)
+          if (!val) {
+            const addr = this.code[this.ip++];
+            this.stack.push(this.ip)
+            this.ip = addr
+          }
+          break
+        }
         case Bytecode.PRINT:
           console.log(this.stack.pop() + '\n')
           break
