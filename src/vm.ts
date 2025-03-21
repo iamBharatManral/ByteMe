@@ -2,17 +2,19 @@ import Bytecode from "./bytecode";
 
 export default class VM {
   stack: Array<number> = []
-  sp = -1;
   fp = 0;
   stackSize = 100;
-  constructor(private code: Array<number>, private data: Array<any>, public ip: number, private trace: boolean = false) { }
+  constructor(private code: Array<number>, private globals: Array<any>, public ip: number, private trace: boolean = false) { }
+  get sp() {
+    return this.stack.length - 1
+  }
   execute() {
     let stackString = "";
     while (this.ip < this.code.length) {
       // Fetch the instruction
       const opcode = this.code[this.ip++]
       if (this.trace) {
-        stackString += `${(this.ip - 1).toString().padStart(4, '0')}: ${this.getInstruction(opcode)} ${this.stack}\n`;
+        stackString += `${(this.ip - 1).toString().padStart(4, '0')}: ${this.getInstruction(opcode)} stack=${JSON.stringify(this.stack)}\n`;
       }
       // Decode the instruction
       switch (opcode) {
@@ -20,29 +22,51 @@ export default class VM {
           if (this.isStackFull()) {
             throw new Error("segmentation fault: maximum depth exceeded")
           }
-          const operand = this.data.at(this.code[this.ip++])
-          this.stack[++this.sp] = operand;
+          const operand = this.globals.at(this.code[this.ip++])
+          this.stack.push(operand)
+          break
+        case Bytecode.GSTORE: {
+          const addr = this.code[this.ip++];
+          this.globals[addr] = this.stack.pop()
+          break
+        }
+        case Bytecode.GLOAD: {
+          const addr = this.code[this.ip++]
+          const val = this.globals[addr]
+          this.stack.push(val)
+          break
+        }
+        case Bytecode.POP:
+          this.stack.pop()
           break
         case Bytecode.PRINT:
-          const val = this.stack.pop()
-          console.log(val)
+          console.log(this.stack.pop())
           break
         case Bytecode.HALT:
           break
       }
     }
+    stackString += `\nglobals:\n${JSON.stringify(this.globals)}`
     console.log(stackString)
   }
   private isStackFull(): boolean {
     return this.stack.length >= this.stackSize
   }
   getInstruction(opcode: number): string {
-    let output = `${Bytecode[opcode]} `
+    let output = `${Bytecode[opcode]} `.padEnd(10)
     switch (opcode) {
-      case Bytecode.ICONST:
-        const operand = this.data.at(this.code[this.ip])
-        output += `${operand}`
+      case Bytecode.ICONST: {
+        const operand = this.globals.at(this.code[this.ip])
+        output += `${operand}`.padEnd(5)
         break
+      }
+      case Bytecode.GLOAD:
+      case Bytecode.GSTORE:
+        {
+          const operand = this.code[this.ip]
+          output += `${operand}`.padEnd(5)
+          break
+        }
     }
     return output.padEnd(15)
   }
