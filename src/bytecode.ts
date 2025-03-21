@@ -1,4 +1,4 @@
-export enum Bytecode {
+enum Bytecode {
   IADD,
   ISUB,
   IMUL,
@@ -17,3 +17,4 @@ export enum Bytecode {
   HALT
 }
 
+export default Bytecode;
