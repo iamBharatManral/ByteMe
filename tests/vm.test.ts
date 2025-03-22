@@ -3,7 +3,11 @@ import Bytecode from '../src/bytecode';
 
 describe('virtual machine execution', () => {
   test('test vm for printing a value', () => {
-    const code = [Bytecode.ICONST, 199, Bytecode.PRINT, Bytecode.HALT]
+    const code = [Bytecode.ICONST, 199,
+    Bytecode.PRINT,
+    Bytecode.HALT
+    ];
+
     const globals: Array<any> = []
     const vm = new VM(code, globals, 0)
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
@@ -13,7 +17,14 @@ describe('virtual machine execution', () => {
   })
 
   test('test vm for addition and multiplication', () => {
-    const code = [Bytecode.ICONST, 199, Bytecode.ICONST, 99, Bytecode.IADD, Bytecode.ICONST, 2, Bytecode.IMUL, Bytecode.PRINT, Bytecode.HALT]
+    const code = [Bytecode.ICONST, 199,
+    Bytecode.ICONST, 99,
+    Bytecode.IADD,
+    Bytecode.ICONST, 2,
+    Bytecode.IMUL,
+    Bytecode.PRINT,
+    Bytecode.HALT];
+
     const globals: Array<any> = []
     const vm = new VM(code, globals, 0)
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
@@ -23,7 +34,15 @@ describe('virtual machine execution', () => {
   })
 
   test('test vm for unconditional branching', () => {
-    const code = [Bytecode.ICONST, 199, Bytecode.ICONST, 99, Bytecode.BR, 11, Bytecode.IADD, Bytecode.ICONST, 2, Bytecode.IMUL, Bytecode.PRINT, Bytecode.HALT]
+    const code = [Bytecode.ICONST, 199,
+    Bytecode.ICONST, 99,
+    Bytecode.BR, 11,
+    Bytecode.IADD,
+    Bytecode.ICONST, 2,
+    Bytecode.IMUL,
+    Bytecode.PRINT,
+    Bytecode.HALT]
+
     const globals: Array<any> = []
     const vm = new VM(code, globals, 0)
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
@@ -33,7 +52,13 @@ describe('virtual machine execution', () => {
   })
 
   test('test vm for conditional true branching when satisfied', () => {
-    const code = [Bytecode.ICONST, 1, Bytecode.BRT, 7, Bytecode.ICONST, 12, Bytecode.IMUL, Bytecode.PRINT, Bytecode.HALT]
+    const code = [Bytecode.ICONST, 1,
+    Bytecode.BRT, 7,
+    Bytecode.ICONST, 12,
+    Bytecode.IMUL,
+    Bytecode.PRINT,
+    Bytecode.HALT]
+
     const globals: Array<any> = []
     const vm = new VM(code, globals, 0)
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
@@ -43,7 +68,13 @@ describe('virtual machine execution', () => {
   })
 
   test('test vm for conditional true branching when not satisfied', () => {
-    const code = [Bytecode.ICONST, 0, Bytecode.BRT, 7, Bytecode.ICONST, 12, Bytecode.IMUL, Bytecode.PRINT, Bytecode.HALT]
+    const code = [Bytecode.ICONST, 0,
+    Bytecode.BRT, 7,
+    Bytecode.ICONST, 12,
+    Bytecode.IMUL,
+    Bytecode.PRINT,
+    Bytecode.HALT]
+
     const globals: Array<any> = []
     const vm = new VM(code, globals, 0)
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
@@ -53,7 +84,13 @@ describe('virtual machine execution', () => {
   })
 
   test('test vm for conditional true branching when not satisfied', () => {
-    const code = [Bytecode.ICONST, 0, Bytecode.BRT, 7, Bytecode.ICONST, 12, Bytecode.IMUL, Bytecode.PRINT, Bytecode.HALT]
+    const code = [Bytecode.ICONST, 0,
+    Bytecode.BRT, 7,
+    Bytecode.ICONST, 12,
+    Bytecode.IMUL,
+    Bytecode.PRINT,
+    Bytecode.HALT]
+
     const globals: Array<any> = []
     const vm = new VM(code, globals, 0)
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
@@ -63,7 +100,12 @@ describe('virtual machine execution', () => {
   })
 
   test('test vm for less than instruction', () => {
-    const code = [Bytecode.ICONST, 0, Bytecode.ICONST, 12, Bytecode.ILT, Bytecode.PRINT, Bytecode.HALT]
+    const code = [Bytecode.ICONST, 0,
+    Bytecode.ICONST, 12,
+    Bytecode.ILT,
+    Bytecode.PRINT,
+    Bytecode.HALT]
+
     const globals: Array<any> = []
     const vm = new VM(code, globals, 0)
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
@@ -73,7 +115,12 @@ describe('virtual machine execution', () => {
   })
 
   test('test vm for equal instruction', () => {
-    const code = [Bytecode.ICONST, 12, Bytecode.ICONST, 13, Bytecode.IEQ, Bytecode.PRINT, Bytecode.HALT]
+    const code = [Bytecode.ICONST, 12,
+    Bytecode.ICONST, 13,
+    Bytecode.IEQ,
+    Bytecode.PRINT,
+    Bytecode.HALT]
+
     const globals: Array<any> = []
     const vm = new VM(code, globals, 0)
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
