@@ -17,7 +17,8 @@ export default class VM {
   constructor(private code: Array<number>, private globals: Array<any>, public ip: number, private trace: boolean = false) { }
   execute() {
     let stackString = "Stack trace:\n";
-    while (this.ip < this.code.length) {
+    loop:
+    while (true) {
       // Fetch the instruction
       const opcode = this.code[this.ip++]
       if (this.trace) {
@@ -140,7 +141,7 @@ export default class VM {
           console.log(val + '\n')
           break
         case Bytecode.HALT:
-          break
+          break loop
       }
     }
     stackString += this.globalsString()
