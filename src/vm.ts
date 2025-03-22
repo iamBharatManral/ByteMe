@@ -21,12 +21,12 @@ export default class VM {
       // Fetch the instruction
       const opcode = this.code[this.ip++]
       if (this.trace) {
-        stackString += `${(this.ip - 1).toString().padStart(4, '0')}: ${this.getInstruction(opcode)} stack=${JSON.stringify(this.stack)}\n`;
+        stackString += `${(this.ip - 1).toString().padStart(4, '0')}: ${this.getInstruction(opcode)} stack=${JSON.stringify(this.stack)}, sp=${this.sp}, fp=${this.fp}\n`;
       }
       // Decode the instruction
       switch (opcode) {
         case Bytecode.ICONST:
-          const operand = this.globals[this.code[this.ip++]]
+          const operand = this.code[this.ip++]
           this.stack[++this.sp] = operand;
           break
         case Bytecode.GSTORE: {
@@ -59,6 +59,18 @@ export default class VM {
           const second = this.stack[this.sp--]
           const first = this.stack[this.sp--]
           this.stack[++this.sp] = first * second
+          break
+        }
+        case Bytecode.ILT: {
+          const second = this.stack[this.sp--]
+          const first = this.stack[this.sp--]
+          this.stack[++this.sp] = Number(first < second)
+          break
+        }
+        case Bytecode.IEQ: {
+          const second = this.stack[this.sp--]
+          const first = this.stack[this.sp--]
+          this.stack[++this.sp] = Number(first == second)
           break
         }
         case Bytecode.BR: {
@@ -101,18 +113,26 @@ export default class VM {
         }
         case Bytecode.CALL: {
           const addr = this.code[this.ip++]
-          const numOfArgs = this.code[this.ip++]
-          this.stack.push(this.ip)
-          this.stack.push(this.fp)
-          this.fp = this.sp
-          for (let i = 1; i <= numOfArgs; i++) { }
+          const nArgs = this.code[this.ip++]
+          this.stack[++this.sp] = nArgs
+          this.stack[++this.sp] = this.ip
           this.ip = addr
+          this.stack[++this.sp] = this.fp
+          this.fp = this.sp
           break
         }
         case Bytecode.RET: {
+          const retVal = this.stack[this.sp--]
           this.sp = this.fp
           this.fp = this.stack[this.sp--]
           this.ip = this.stack[this.sp--]
+          let args = this.stack[this.sp--]
+          while (args > 0) {
+            this.sp--
+            args--
+          }
+
+          this.stack[++this.sp] = retVal
           break
         }
         case Bytecode.PRINT:
@@ -130,7 +150,7 @@ export default class VM {
     let output = `${Bytecode[opcode]} `.padEnd(10)
     switch (opcode) {
       case Bytecode.ICONST: {
-        const operand = this.globals.at(this.code[this.ip])
+        const operand = this.code[this.ip]
         output += `${operand}`.padEnd(5)
         break
       }
@@ -141,6 +161,7 @@ export default class VM {
       case Bytecode.BR:
       case Bytecode.BRT:
       case Bytecode.BRF:
+      case Bytecode.CALL:
         {
           const operand = this.code[this.ip]
           output += `${operand}`.padEnd(5)
@@ -149,7 +170,6 @@ export default class VM {
       case Bytecode.IADD:
       case Bytecode.ISUB:
       case Bytecode.IMUL:
-      case Bytecode.CALL:
         {
           const operand2 = this.stack.at(-1)
           const operand1 = this.stack.at(-2)
