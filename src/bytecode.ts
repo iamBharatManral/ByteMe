@@ -14,7 +14,9 @@ enum Bytecode {
   GSTORE,
   PRINT,
   POP,
-  HALT
+  HALT,
+  CALL,
+  RET
 }
 
 export default Bytecode;
